@@ -88,6 +88,28 @@ tips:使用 + 是相对高代价的操作 链接过程中创建了新的列表 �
 
 排序
 sort() 方法
+In [24]: a = [23,1,14,56]                              
+
+In [25]: a.sort()                                      
+
+In [26]: a                                             
+Out[26]: [1, 14, 23, 56]
+
+In [27]:                                               
+
+sort() 参数示例
+In [27]: b = ['asd','dfgfhhhh','sdfgh','s','df']       
+
+In [28]: b.sort(key=len)                               
+
+In [29]: b                                             
+Out[29]: ['s', 'df', 'asd', 'sdfgh', 'dfgfhhhh']
+
+In [30]:       
+二分搜索和已排序列表的维护
+bisect 模块实现二分搜索和已排序列表插值
+bisect.bisect 找到应当被插入的位置并保持序列排序
+bisect.insort 将元素插入到相应位置
 
 
 
