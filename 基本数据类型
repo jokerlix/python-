@@ -111,6 +111,442 @@ bisect 模块实现二分搜索和已排序列表插值
 bisect.bisect 找到应当被插入的位置并保持序列排序
 bisect.insort 将元素插入到相应位置
 
+ In [31]: import bisect                                                        
+
+In [32]: c = [1,2,3,3,4,6]                                                    
+
+In [33]: bisect.bisect(c,2)                                                   
+Out[33]: 2
+
+In [34]: bisect.bisect(c,4)                                                   
+Out[34]: 5
+
+In [35]: bisect.insort(c,6)                                                   
+
+In [36]: c                                                                    
+Out[36]: [1, 2, 3, 3, 4, 6, 6]
+
+bisect模块不会检查列表是否已经排序，对没有排序的裂变使用bisect函数不会报错但是会导致错误结果
+
+切片
+形式：[start:stop]
+In [36]: c                                                                    
+Out[36]: [1, 2, 3, 3, 4, 6, 6]
+
+In [37]: c[1:5]                                                               
+Out[37]: [2, 3, 3, 4]
+
+切片可以将序列赋值给变量
+In [36]: c                                                                    
+Out[36]: [1, 2, 3, 3, 4, 6, 6]
+
+In [37]: c[1:5]                                                               
+Out[37]: [2, 3, 3, 4]
+
+In [38]: c[1:2] = [3]                                                         
+
+In [39]: c                                                                    
+Out[39]: [1, 3, 3, 3, 4, 6, 6]
+
+tips:切片区间是左闭右开
+start 和 stop 可以省略 如果省略会默认传入序列的开始位置或者结束位置
+In [39]: c                                                                    
+Out[39]: [1, 3, 3, 3, 4, 6, 6]
+
+In [40]: c[:12]                                                               
+Out[40]: [1, 3, 3, 3, 4, 6, 6]
+
+In [41]: c[:3]                                                                
+Out[41]: [1, 3, 3]
+
+In [42]: c[:]                                                                 
+Out[42]: [1, 3, 3, 3, 4, 6, 6]
+
+
+
+负索引从序列尾部开始进行索引
+
+In [43]: c[-1:]                                                               
+Out[43]: [6]
+
+In [44]: c[-1]                                                                
+Out[44]: 6
+
+In [45]: c[-4:]                                                               
+Out[45]: [3, 4, 6, 6]
+
+步长 step 在第二个冒号后使用 ，每隔多少个数取一个值
+
+In [47]: c                                                                    
+Out[47]: [1, 3, 3, 3, 4, 6, 6]
+
+In [48]: c[::2]                                                               
+Out[48]: [1, 3, 4, 6]
+
+当需要对列表或者元组进行翻转时 就使得步长 -1
+In [49]: c[::-1]                                                              
+Out[49]: [6, 6, 4, 3, 3, 3, 1]
+
+In [50]: c                                                                    
+Out[50]: [1, 3, 3, 3, 4, 6, 6]
+
+内建序列函数
+
+enumerate
+在遍历一个序列的同时追踪当前元素的索引
+需要对数据建立索引时，一种有效模式就是使用enumrate构造一个字典 将序列值映射到索引位置上
+In [51]: some_list =['foo','bar','baz']                                       
+
+In [52]: mapping = {}                                                         
+
+In [53]: for i,v in enumerate(some_list): 
+    ...:     mapping[v] = i 
+    ...:                                                                      
+
+In [54]: mapping                                                              
+Out[54]: {'foo': 0, 'bar': 1, 'baz': 2}
+
+
+sorted
+返回一个根据任意序列中元素新建的已排序列表
+In [56]: sorted([7,1,2,6,0,3,2])                                              
+Out[56]: [0, 1, 2, 2, 3, 6, 7]
+
+In [57]: sorted('horse race')                                                 
+Out[57]: [' ', 'a', 'c', 'e', 'e', 'h', 'o', 'r', 'r', 's']
+
+In [58]:  
+tips: sorted为python内置函数 sort 为列表函数
+
+zip 
+zip 将列表 元组 或者其他序列的元素配对 新建一个元组构成的列表
+zip可以处理任意长度序列 列表长度有最短的序列决定
+In [66]: seq3 = ['false','true']                                              
+
+In [67]: zipped1 = zip(seq1,seq2,seq3)                                        
+
+In [68]: list(zipped1)                                                        
+Out[68]: [('foo', 'one', 'false'), ('bar', 'two', 'true')]
+
+zip 可是与enumerate 结合起来
+
+In [69]: for i,(a,b) in enumerate(zip(seq1,seq2)): 
+    ...:     print('{0}:{1},{2}'.format(i,a,b)) 
+    ...:                                                                      
+0:foo,one
+1:bar,two
+2:baz,three
+
+zip(*name) 解压缩
+In [78]: list(zipped)                                                         
+Out[78]: [('one', 'foo'), ('two', 'bar'), ('three', 'baz')]
+
+In [79]: zipped                                                               
+Out[79]: <zip at 0x7f73be5bd488>
+
+In [80]: list(zipped)                                                         
+Out[80]: []
+
+In [81]: zipped = zip(seq2,seq1)                                              
+
+In [82]: first_row , last_row = zip(*zipped)                                  
+
+In [83]: first_row                                                            
+Out[83]: ('one', 'two', 'three')
+
+In [84]: last_row                                                             
+Out[84]: ('foo', 'bar', 'baz')
+
+
+reversed 将序列元素倒序排列
+tips：reversed 是一个生成器 如果没有实例化（list函数或者进行for循环）不会产生一个倒叙列表
+
+
+*字典（最重要数据类型）
+In [85]: d1 = {'a':'today is a happy day','b':12243}                          
+
+In [86]: d1                                                                   
+Out[86]: {'a': 'today is a happy day', 'b': 12243}
+
+In [87]: d1['test_key'] = 'this is a test value'                              
+
+In [88]: d1                                                                   
+Out[88]: {'a': 'today is a happy day', 'b': 12243, 'test_key': 'this is a test value'}
+
+In [90]: d1                                                                   
+Out[90]: {'a': 'today is a happy day', 'b': 12243, 'test_key': 'this is a test value'}
+
+del 删除指定key-value 对 
+pop 删除指定key-value 对并且返回
+In [91]: del d1['a']                                                          
+
+In [92]: d1                                                                   
+Out[92]: {'b': 12243, 'test_key': 'this is a test value'}
+
+In [93]: ret = d1.pop('b')                                                    
+
+In [94]: ret                                                                  
+Out[94]: 12243
+
+In [95]: d1                                                                   
+Out[95]: {'test_key': 'this is a test value'}
+
+
+keys()
+values() 提供字典键值迭代器
+
+In [95]: d1                                                                   
+Out[95]: {'test_key': 'this is a test value'}
+
+In [96]: d1['a'] = 'WTF'                                                      
+
+In [97]: d1                                                                   
+Out[97]: {'test_key': 'this is a test value', 'a': 'WTF'}
+In [95]: d1                                                                   
+Out[95]: {'test_key': 'this is a test value'}
+
+In [96]: d1['a'] = 'WTF'                                                      
+
+In [97]: d1                                                                   
+Out[97]: {'test_key': 'this is a test value', 'a': 'WTF'}
+
+update 将两个字典进行合并
+In [102]: d1                                                                  
+Out[102]: {'test_key': 'this is a test value', 'a': 'WTF'}
+
+In [103]: d2 = {'i':211223 ,'b':'test'}                                       
+
+In [104]: d1.update(d2)                                                       
+
+In [105]: d1                                                                  
+Out[105]: {'test_key': 'this is a test value', 'a': 'WTF', 'i': 211223, 'b': 'test'}
+
+
+
+在序列生成字典
+In [109]: mapping = dict(zip(range(5),reversed(range(5))))                    
+
+In [110]: mapping                                                             
+Out[110]: {0: 4, 1: 3, 2: 2, 3: 1, 4: 0}
+使用 zip进行配对 并使用dict 将配对成功的一一对应成为字典类型
+
+
+
+In [111]: words = ['apple','bat','atom','but','bottle','araise','sex']        
+
+In [112]: by_letters = {}   
+
+In [114]: for word in words: 
+     ...:     letter = word[0] 
+     ...:     if letter not in by_letters: 
+     ...:         by_letters[letter] = [word] 
+     ...:     else: 
+     ...:         by_letters[letter].append(word) 
+     ...:                                                                     
+
+In [115]: by_letters                                                          
+Out[115]: {'a': ['apple', 'atom', 'araise'], 'b': ['bat', 'but', 'bottle'], 's': ['sex']}
+<===========等价==============>
+
+setdefault 作用
+In [118]: by_letters = {}                                                     
+
+In [119]: for word in words: 
+     ...:     letter = word[0] 
+     ...:     by_letters.setdefault(letter,[]).append(word) 
+     ...:                                                                     
+
+In [120]: by_letters                                                          
+Out[120]: {'a': ['apple', 'atom', 'araise'], 'b': ['bat', 'but', 'bottle'], 's': ['sex']}
+<=================等价=================>
+from collections import defaultdict
+by_letter = defaultdict(list)
+for word in words：
+    by_letter[word[0]].append(word)
+内建的集合模块 defaultdict 向字典中对应位置传入相对应的值
+
+
+
+
+
+
+
+
+
+if key in some_dict:
+  value = some_dict[key]
+ else:
+  value = default_value
+
+<========等价========>
+
+value = some_dict.get(key,default_value)
+功能：将键在some_dict中的值放到value 如果key不在some_dict 中则将默认值给到value中
+
+
+有效的字典键类型
+
+字典的键必须是不可变对象 (标量 元组(元组内部所有的元素必须不可改变(1,2,3,[1,2,3])不可以hash化) )
+检查一个对象是否是不可变对象或者是否可以作为字典的键则检查对象是否可以哈希化
+
+
+In [122]: hash('string')                                                      
+Out[122]: 3381153119113649058
+
+In [123]: hash(1)                                                             
+Out[123]: 1
+
+In [124]: hash((1,2,4))                                                       
+Out[124]: 2528502973976161366
+
+In [125]: hash([1,2,3])                                                       
+---------------------------------------------------------------------------
+TypeError                                 Traceback (most recent call last)
+<ipython-input-125-35e31e935e9e> in <module>
+----> 1 hash([1,2,3])
+
+TypeError: unhashable type: 'list'
+
+由于list是可变的 hash化会出错
+
+如果list类型想要作为字典的键 将list转换为tuple
+d[tuple([1,2,3])] = 5
+d
+{[1,2,3]:5}
+
+集合
+集合是一种无序 元素唯一的容器 
+创建方法
+In [129]: set([1,2,3,4,5,3])                                                  
+Out[129]: {1, 2, 3, 4, 5}
+
+In [130]: {1,2,3,4,3,4,1}                                                     
+Out[130]: {1, 2, 3, 4}
+
+In [131]: {3,4,5,56,1,2,3,4,4,4,1,2}                                          
+Out[131]: {1, 2, 3, 4, 5, 56}
+
+集合支持 交集 并集 差集 对称差集
+
+In [133]: a = {1,2,3,4,5,6}                                                   
+
+In [134]: b = {2,3,4,5,9}                                                     
+
+In [135]: a.union(b)                                                          
+Out[135]: {1, 2, 3, 4, 5, 6, 9}
+
+In [136]: a                                                                   
+Out[136]: {1, 2, 3, 4, 5, 6}
+
+In [137]: a | b                                                               
+Out[137]: {1, 2, 3, 4, 5, 6, 9}
+
+In [138]: a & b                                                               
+Out[138]: {2, 3, 4, 5}
+
+In [139]: a.intersection(b)                                                   
+Out[139]: {2, 3, 4, 5}
+
+
+集合函数
+ a.add(x) --------------------向a集合中添加x元素
+ a.clear()--------------------将a集合重置为空
+ a.remove(x)------------------从集合中删除某个元素
+ a.pop()----------------------移除任意元素，如果集合是空的抛出keyError
+ a.union(b)-------------------a | b a和b中的所有不同的元素 并集
+ a.update(b)------------------a |= b 将a设置为a与b的并集
+ a.intersection(b)------------a&b 交集
+ a.intersection_update(b)-----a&=b 将a设置为a与b的交集内容
+ a.difference(b)--------------a-b 在a不在b中的元素
+ a.difference_update(b)-------a-=b 将a设置为在a不再b中的元素
+ a.symmetric_difference(b)----a^b所有在a或b中，但是不是同时在a，b中的元素
+ a.symmetric_difference_update(b) a^=b 将a设置为所有在a或b中的元素
+ a.issubset(b)-----------------判断a是否为b的子集
+ a.issuperset(b)---------------判断a是否为b的超集
+ a.isdisjoint(b)---------------判断a,b是否没有交集
+集合的元素类型必须是不可变的和字典类似
+
+list set dict 的推导式
+  推导式允许过滤一个容器的元素
+  [expr for val in collection if condition]
+  <============等价于=============>
+  result = []
+  for val in collection:
+    if conditon:
+      result.append(expr)
+      
+      
+In [141]: string = ['a','as','bat','car','dove','python']                     
+
+In [142]: [x.upper() for  x in string if len(x)>2]                            
+Out[142]: ['BAT', 'CAR', 'DOVE', 'PYTHON']
+
+
+字典推导式
+
+dict_comp = {key-expr:value-expr for value in collection if conditon}
+
+<===================等价于=====================>
+result = {}
+for key,value in collection:
+  if condition :
+    result[key] = value
+
+集合推导式
+
+set_comp = {expr for value in collection if condition }
+<====================等价于======================>
+set = {}
+for value in collection:
+  if conditon:
+    result.add(expr)
+    
+求集合各个元素长度
+In [143]: unique_lengths = {len(x) for x in string}                           
+
+In [144]: unique_lengths                                                      
+Out[144]: {1, 2, 3, 4, 6}
+<====================等价于============================>
+set(map(len,string))
+map函数
+map() 会根据提供的函数对指定序列做映射。
+第一个参数 function 以参数序列中的每一个元素调用 function 函数，返回包含每次 function 函数返回值的新列表。
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
