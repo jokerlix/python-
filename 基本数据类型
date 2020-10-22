@@ -1,1 +1,96 @@
 
+列表
+列表长度可变 包含内容可以修改
+In [1]: a_list = [1,2,3,None]                          
+
+In [2]: tup = ('foo','bar','baz')                      
+
+In [3]: b_list = list(tup)                             
+
+In [4]: b_list                                         
+Out[4]: ['foo', 'bar', 'baz']
+
+In [5]: b_list[1] = 'mother_fuker'                     
+
+In [6]: b_list                                         
+Out[6]: ['foo', 'mother_fuker', 'baz']
+
+In [7]:  
+
+list 函数在数据处理中常用于 迭代器 或者生成器转化为列表
+In [7]: gen = range(10)                                
+
+In [8]: gen                                            
+Out[8]: range(0, 10)
+
+In [9]: list(gen)                                      
+Out[9]: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+
+In [10]:                                               
+
+append() 方法在结尾添加内容
+insert() 方法在指定位置添加内容
+
+In [11]: b_list.append('dkjfj')                        
+
+In [12]: b_list                                        
+Out[12]: ['foo', 'mother_fuker', 'baz', 'dkjfj']
+
+In [13]: b_list.insert(1,'red')                        
+
+In [14]: b_list                                        
+Out[14]: ['foo', 'red', 'mother_fuker', 'baz', 'dkjfj']
+
+In [15]:  
+
+pop() 方法将指定位置内容移除 并返回内容
+In [14]: b_list                                        
+Out[14]: ['foo', 'red', 'mother_fuker', 'baz', 'dkjfj']
+
+In [15]: b_list.pop(1)                                 
+Out[15]: 'red'
+
+In [16]: b_list                                        
+Out[16]: ['foo', 'mother_fuker', 'baz', 'dkjfj']
+
+remove() 方法 将定位第一个符合要求的值 并移除
+In [16]: b_list                                        
+Out[16]: ['foo', 'mother_fuker', 'baz', 'dkjfj']
+
+In [17]: b_list.remove('mother_fuker')                 
+
+In [18]: b_list                                        
+Out[18]: ['foo', 'baz', 'dkjfj']
+
+in 关键字 检查一个值是否在列表中
+In [18]: b_list                                        
+Out[18]: ['foo', 'baz', 'dkjfj']
+
+In [19]: 'baz' in b_list                               
+Out[19]: True
+
+In [20]: 'son_of_a_bitch' in b_list                    
+Out[20]: False
+
+检查列表是否包含一个指定值时非常缓慢的（python 在列表中进行了线性逐个扫描）
+在字典和集合中 是同时检查所有元素（基于哈希表）
+
++ 链接连个列表
+extend() 向列表添加多个元素
+In [21]: x = [4,None,'foo']                            
+
+In [22]: x.extend([7,8,(2,3)])                         
+
+In [23]: x                                             
+Out[23]: [4, None, 'foo', 7, 8, (2, 3)]
+tips:使用 + 是相对高代价的操作 链接过程中创建了新的列表 并且复制了对象
+使用extend将元素添加到已经存在的列表无需创建新的列表 并且复制对象
+
+排序
+sort() 方法
+
+
+
+
+
+
