@@ -501,7 +501,7 @@ for value in collection:
   if conditon:
     result.add(expr)
     
-求集合各个元素长度
+求集合各个元素长度 并且放到一个集合内
 In [143]: unique_lengths = {len(x) for x in string}                           
 
 In [144]: unique_lengths                                                      
@@ -511,6 +511,47 @@ set(map(len,string))
 map函数
 map() 会根据提供的函数对指定序列做映射。
 第一个参数 function 以参数序列中的每一个元素调用 function 函数，返回包含每次 function 函数返回值的新列表。
+
+嵌套列表
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
