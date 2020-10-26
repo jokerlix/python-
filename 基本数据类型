@@ -633,9 +633,272 @@ Out[49]:
 
 
 
+匿名（Lamba）函数
+匿名函数是通过单个语句生成函数的方式 结果是返回值
+
+In [72]: strings = ['foo','card','bar','aaaa','abab']                                                           
+
+In [73]: strings.sort(key=lambda x :len(set(list(x))))                                                          
+
+In [74]: strings                                                                                                
+Out[74]: ['aaaa', 'foo', 'abab', 'bar', 'card']
+
+柯里化：表示通过部分参数应用的方式 从已有的函数中衍生出新的函数 
+
+def add_number(x,y):
+  return x+y
+
+add_five = lambda y : add_number(5,y) 通过已经存在的add_number函数衍生出新的函数
+
+functools 模块使用 pratial 函数简化处理
+In [75]: from functools import partial                                                                          
+
+In [76]: def add_number(x,y)                                                                                    
+  File "<ipython-input-76-27c15c6b9dd4>", line 1
+    def add_number(x,y)
+                       ^
+SyntaxError: invalid syntax
 
 
+In [77]: def add_number(x,y): 
+    ...:     return x+y 
+    ...:                                                                                                        
 
+In [78]: add_five = lambda y : add_number(5,y)                                                                  
+
+In [79]: add_five(4)                                                                                            
+Out[79]: 9
+
+In [80]: add_six = partial(add_number,6)                                                                        
+
+In [81]: add_six(5)                                                                                             
+Out[81]: 11
+
+
+生成器：
+通过一致的方式遍历序列 
+迭代器协议是一种令对象可遍历的通用方式
+for key in some_dict:
+  print(key)
+当读入到for key in some_dict:语句时 python 解释器首先尝试根据some_dict 生成一个迭代器
+dict_iterator = iter(some_dict)
+dict_iterator
+
+生成器
+返回一个多结果的序列，在每一个元素产生后暂停 直到下一个请求 
+若需要创建一个生成器 将return关键字换成 yield
+
+
+In [88]: def squares(n=10): 
+    ...:     print('Generating squares from 1 to {0}'.format(n**2)) 
+    ...:     for i in range(1,n+1): 
+    ...:         yield i**2 
+    ...:                                                                                                        
+
+In [89]: gen = squares()                                                                                        
+
+In [90]: gen                                                                                                    
+Out[90]: <generator object squares at 0x7fdf7c7e6e60>
+
+In [91]: for x in gen : 
+    ...:     print(x,end=' ') 
+    ...:                                                                                                        
+Generating squares from 1 to 100
+1 4 9 16 25 36 49 64 81 100 
+
+调用生成器时候 代码不会立即执行，直到请求生成器中的元素时候 才会执行代码
+
+生成器表达式:
+gen = (x**2 for x in range(10))
+<=============等价于===================>
+In [88]: def squares(n=10): 
+    ...:     print('Generating squares from 1 to {0}'.format(n**2)) 
+    ...:     for i in range(1,n+1): 
+    ...:         yield i**2 
+    ...:                                                                                                        
+生成器表达式可以作为函数参数用于替代列表推导式
+
+In [102]: sum(x**2 for x in range(100))                                                                         
+Out[102]: 328350
+
+In [103]: dict((i,i**2) for i in range(5))                                                                      
+Out[103]: {0: 0, 1: 1, 2: 4, 3: 9, 4: 16}
+
+itertools 模块:适用于大多数数据算法的生成器集合 
+In [104]: import itertools                                                                                      
+
+In [105]: first_letter = lambda x:x[0]                                                                          
+
+In [106]: names = ['Alan','Adam','Wes','Will','Albert','Steven']                                                
+
+In [107]: for letter,names in itertools.groupby(names,first_letter): 
+     ...:     print(letter,list(names)) 
+     ...:                                                                                                       
+A ['Alan', 'Adam']
+W ['Wes', 'Will']
+A ['Albert']
+S ['Steven']
+
+有用的itertools函数
+combinations(iterable,k)  根据iterable参数中所有元素生成一个包含所有可能 K-元组的序列 忽略元素的顺序 也不进行替代
+permutations(iterable,k) 根据iterable参数中的所有元素按顺序生成包含所有可能k元组的序列
+groupby(iterable[,keyfunc]) 根据每一个独一的key生成（key,sub-iterator）元组
+product(*iterables,repeat=1) 以元组的形式 根据输入的可遍历对象生成笛卡尔积 与嵌套的for循环类似
+
+错误与异常处理
+
+可以通过将会抛出异常的函数写入到try/except 代码段中
+In [109]: def attempt_float(x): 
+     ...:     try: 
+     ...:         return float(x) 
+     ...:     except: 
+     ...:         return x 
+     ...:                                                                                                       
+
+In [110]: attempt_float(1.234)                                                                                  
+Out[110]: 1.234
+
+In [111]: attempt_float(1)                                                                                      
+Out[111]: 1.0
+
+In [112]: attempt_float('124')                                                                                  
+Out[112]: 124.0
+
+In [113]: attempt_float('some_thing')                                                                           
+Out[113]: 'some_thing'
+
+若float(x)出现异常 则执行except中的语句
+
+可以通过将多个异常类型写成元组的形式 同时捕获多个异常
+
+In [114]: def attempt_float(x): 
+     ...:     try: 
+     ...:         return float(x) 
+     ...:     except (TypeError,ValueError): 
+     ...:         return x 
+
+
+无论try部分是否抛出错误都要执行
+finally语句
+f = open(path,'w')
+try:
+ write_to_file(f)
+finally:
+ f.close()
+
+文件与操作系统
+
+打开文件
+path == 'examples/segismundo.txt'
+f = open(path)
+
+for line in f:
+ pass
+ 
+在使用open语句创建文件对象时 在结束操作时候显式的关闭文件
+f.close()
+使用with语句，文件会在with代码块结束后自动关闭文件
+
+with open(path) as f；
+ lines = [x.rstrip() for x in f]
+ 
+字节与Unicode 文件
+
+data.decode('utf-8') 解码
+
+
+numpy 基础 数组和向量化计算
+
+
+numpy ndarray :多维数组对象
+
+numpy 核心特征之一就是N维数组对象 ndarray  -------大型数据集容器
+
+
+In [116]: import numpy as np                                                                                    
+
+In [117]: data = np.random.randn(2,3)                                                                           
+
+In [118]: data                                                                                                  
+Out[118]: 
+array([[ 0.7739898 ,  1.03867592,  0.12782728],
+       [-0.40561562,  0.6259303 , -0.71695792]])
+
+In [119]: data.shape #返回矩阵行列数量信息                                                                                           
+Out[119]: (2, 3)
+
+In [120]: data.dtype #返回各个元素的类型                                                                                           
+Out[120]: dtype('float64')
+
+生成ndarray 
+生成数组最简单的方式就是使用array函数
+
+In [121]: data1 = [6,7.5,8,0,1]                                                                                 
+
+In [122]: arr1 = np.array(data1)                                                                                
+
+In [123]: arr1                                                                                                  
+Out[123]: array([6. , 7.5, 8. , 0. , 1. ])
+
+嵌套序列会自动转换成多维数组
+In [125]: data2 = [[1,2,3,4],[5,6,7,8]]                                                                         
+
+In [126]: arr2 = np.array(data2)                                                                                
+
+In [127]: arr2                                                                                                  
+Out[127]: 
+array([[1, 2, 3, 4],
+       [5, 6, 7, 8]])
+
+np.array 会自动推断生成数组的数据类型
+
+In [130]: arr1.dtype                                                                                            
+Out[130]: dtype('float64')
+
+In [131]: arr2.dtype                                                                                            
+Out[131]: dtype('int64')
+
+np.zeros() 给定长度与形状后 可以一次性创造全0 数组
+np.ones() 可以一次性创造全1 数组
+
+np.empty() 可以创建一个没有初始值的数组 有时候返回的是垃圾数据 并非为空 
+想要创建新的高维数组 需要为shape传递一个元组
+
+
+In [146]: np.identity(4)                                                                                        
+Out[146]: 
+array([[1., 0., 0., 0.],
+       [0., 1., 0., 0.],
+       [0., 0., 1., 0.],
+       [0., 0., 0., 1.]])
+
+In [147]: np.eye(3)                                                                                             
+Out[147]: 
+array([[1., 0., 0.],
+       [0., 1., 0.],
+       [0., 0., 1.]])
+
+astype 方法显式转换数组
+In [149]: arr = np.array([1,2,3,4,5])                                                                           
+
+In [150]: arr.dtype                                                                                             
+Out[150]: dtype('int64')
+
+In [151]: float_arr = arr.astype(np.float64)                                                                    
+
+In [152]: float_arr                                                                                             
+Out[152]: array([1., 2., 3., 4., 5.])
+
+In [153]: float_arr.dtype()                                                                                     
+---------------------------------------------------------------------------
+TypeError                                 Traceback (most recent call last)
+<ipython-input-153-825e49b691ad> in <module>
+----> 1 float_arr.dtype()
+
+TypeError: 'numpy.dtype' object is not callable
+
+In [154]: float_arr.dtype                                                                                       
+Out[154]: dtype('float64')
 
 
 
