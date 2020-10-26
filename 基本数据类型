@@ -512,13 +512,123 @@ map函数
 map() 会根据提供的函数对指定序列做映射。
 第一个参数 function 以参数序列中的每一个元素调用 function 函数，返回包含每次 function 函数返回值的新列表。
 
-嵌套列表
+嵌套列表推导式
+
+In [4]: all_data = [['Jone','Emily','Michael','Mary','Steven'],['Maria','Juan','Javier','Natalia','Pilar']]     
+
+In [5]: names_of_interest = []                                                                                  
+
+In [6]: for names in all_data: 
+   ...:     enough_es = [name for name in names if name.count('e') >= 2] 
+   ...:     names_of_interest.extend(enough_es) 
+   ...:                                                                                                         
+<======================等价于===============================>
+
+In [7]: result = [name for names in all_data for name in names if name.count('e') >= 2]                         
+
+In [8]: result                                                                                                  
+Out[8]: ['Steven']
+
+In [9]: names_of_interest                                                                                       
+Out[9]: ['Steven']
 
 
+In [11]: some_tuples = [(1,2,3),(4,5,6),(7,8,9)]                                                                
+
+In [12]: flattended = [x for tup in some_tuples for x in tup]                                                   
+
+In [13]: flattended                                                                                             
+Out[13]: [1, 2, 3, 4, 5, 6, 7, 8, 9]
+
+<===============等价于=================>
+In [17]: for tups in some_tuples: 
+    ...:     for x in tups: 
+    ...:         flattended.append(x) 
+    ...:          
+    ...:                                                                                                        
+
+In [18]: flattended                                                                                             
+Out[18]: [1, 2, 3, 4, 5, 6, 7, 8, 9]
 
 
+函数
+
+In [21]: def my_function(x,y,z=1.5): 
+    ...:     if z > 1: 
+    ...:         return z*(x+y) 
+    ...:     else: 
+    ...:         return z/(x+y) 
+    ...:                                                                                                        
+
+In [22]: my_function                                                                                            
+Out[22]: <function __main__.my_function(x, y, z=1.5)>
+
+In [23]: my_function(5,6)                                                                                       
+Out[23]: 16.5
+
+In [24]: my_function(5,6,7)                                                                                     
+Out[24]: 77
 
 
+命名空间 作用域 本地函数
+
+函数有两种连接变量的方式：全局 本地
+
+In [26]: def func(): 
+    ...:     a = [] 
+    ...:     for i in range(5): 
+    ...:         a.append(i) 
+    ...:                                                                                                        
+
+In [27]: func                                                                                                   
+Out[27]: <function __main__.func()>
+
+In [28]: a                                                                                                      
+---------------------------------------------------------------------------
+NameError                                 Traceback (most recent call last)
+<ipython-input-28-3f786850e387> in <module>
+----> 1 a
+
+NameError: name 'a' is not defined
+<===============================>
+此处a为本地（局部）变量 跳出func()函数就会销毁
+使用global 关键字声明为全局变量]
+如果global关键字在程序文件内大量使用 需要使用面向面向对象编程（使用类）
+
+
+返回多个值的时候 默认返回的是一个元组
+
+可以设置返回值为字典型
+def f():
+ a = 5
+ b = 6
+ c = 7
+ return {'a':a,'b':b,'c':c}
+ 
+函数是对象
+
+In [47]: states = ['  Alabama','Georgial!','Georgia','georgia','F1OiIda','south   carolina##','West virginia?'] 
+
+In [48]: def clean_strings(strings): 
+    ...:     result = [] 
+    ...:     for value in strings: 
+    ...:         value = value.strip() #删除字符串左边和右边的空格
+    ...:         value = re.sub('[!#?]','',value) #正则化
+    ...:         value = value.title() #将字符串首字母变为大写
+    ...:         result.append(value) 
+    ...:     return result 
+    ...:      
+    ...:                                                                                                        
+
+In [49]: clean_strings(states)                                                                                  
+Out[49]: 
+['Alabama',
+ 'Georgial',
+ 'Georgia',
+ 'Georgia',
+ 'F1Oiida',
+ 'South   Carolina',
+ 'West Virginia']
 
 
 
