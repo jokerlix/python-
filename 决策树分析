@@ -96,3 +96,29 @@ Out[22]: 'Tree.pdf'
 
 In [23]: graph                                                                                                  
 Out[23]: <graphviz.files.Source at 0x7fdcfb8e55c0>
+
+
+
+
+
+
+In [24]: clf = tree.DecisionTreeClassifier(criterion="gini")                                                    
+
+In [25]: clf = clf.fit(Xtrain,Ytrain)                                                                           
+
+In [26]: score = clf.score(Xtest,Ytest)                                                                         
+
+In [27]: score                                                                                                  
+Out[27]: 0.9259259259259259
+#西瓜书上预剪枝代码
+In [54]: clf = tree.DecisionTreeClassifier(criterion='entropy',splitter='best',min_impurity_decrease=0)         
+
+In [55]: %hist -f Decision_tree_code.py                                                                         
+
+In [56]: clf = clf.fit(Xtrain,Ytrain)                                                                           
+
+In [57]: score = clf.score(Xtest,Ytest)                                                                         
+
+In [58]: score                                                                                                  
+Out[58]: 0.9814814814814815
+
