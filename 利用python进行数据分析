@@ -1972,35 +1972,277 @@ dtype: int64
 
 
 DataFrame 
-DataFrame 表示的是矩阵的数据表  包含已经排序的列集合 每一列可以是不同的值类型（树值）
+DataFrame 表示的是矩阵的数据表  包含已经排序的列集合 每一列可以是不同的值类型（数值，字符串，bool值）
+DataFrame中的数据是以一个或者多个二维块存放的 
+
+In [96]: data = {'state':['Ohio','Ohio','Ohio','Nevada','Nevada','Nev
+    ...: ada'],'year':[2000,2001,2002,2001,2002,2003],'pop':[1.5,1.7,
+    ...: 3.6,2.4,2.9,3.2]}                                           
+
+In [97]: frame = pd.DataFrame(data)                                  
+
+In [98]: frame                                                       
+Out[98]: 
+    state  year  pop
+0    Ohio  2000  1.5
+1    Ohio  2001  1.7
+2    Ohio  2002  3.6
+3  Nevada  2001  2.4
+4  Nevada  2002  2.9
+5  Nevada  2003  3.2
+
+head()方法选取前五行
+In [99]: frame.head()                                                
+Out[99]: 
+    state  year  pop
+0    Ohio  2000  1.5
+1    Ohio  2001  1.7
+2    Ohio  2002  3.6
+3  Nevada  2001  2.4
+4  Nevada  2002  2.9
+
+In [100]: frame.head(2)                                              
+Out[100]: 
+  state  year  pop
+0  Ohio  2000  1.5
+1  Ohio  2001  1.7
+
+如果指定列序列 DataFrame的列按照指定顺序进行排列
+In [101]: pd.DataFrame(data,columns=['year','state','pop'])          
+Out[101]: 
+   year   state  pop
+0  2000    Ohio  1.5
+1  2001    Ohio  1.7
+2  2002    Ohio  3.6
+3  2001  Nevada  2.4
+4  2002  Nevada  2.9
+5  2003  Nevada  3.2
+
+
+In [102]: pd.DataFrame(data,columns=['year','state','pop','debt'],ind
+     ...: ex=['one','two','three','four','five','six'])              
+Out[102]: 
+       year   state  pop debt
+one    2000    Ohio  1.5  NaN
+two    2001    Ohio  1.7  NaN
+three  2002    Ohio  3.6  NaN
+four   2001  Nevada  2.4  NaN
+five   2002  Nevada  2.9  NaN
+six    2003  Nevada  3.2  NaN
+如果传入的列在data中找不到对应的就会使用NAN代替
+
+frame2[column]适用于任何列的名，但是frame2.column只有在列名是一个合理的Python变量名时才适用。
+
+In [109]: frame2['year']                                             
+Out[109]: 
+one      2000
+two      2001
+three    2002
+four     2001
+five     2002
+six      2003
+Name: year, dtype: int64
+
+In [110]: frame2.year                                                
+Out[110]: 
+one      2000
+two      2001
+three    2002
+four     2001
+five     2002
+six      2003
+Name: year, dtype: int64
+
+In [111]: frame2                                                     
+Out[111]: 
+       year   state  pop debt
+one    2000    Ohio  1.5  NaN
+two    2001    Ohio  1.7  NaN
+three  2002    Ohio  3.6  NaN
+four   2001  Nevada  2.4  NaN
+five   2002  Nevada  2.9  NaN
+six    2003  Nevada  3.2  NaN
+
+In [112]: frame2['state']                                            
+Out[112]: 
+one        Ohio
+two        Ohio
+three      Ohio
+four     Nevada
+five     Nevada
+six      Nevada
+Name: state, dtype: object
+
+In [113]: frame2.state                                               
+Out[113]: 
+one        Ohio
+two        Ohio
+three      Ohio
+four     Nevada
+five     Nevada
+six      Nevada
+Name: state, dtype: object
+
+#将列表或者数组赋值给某个列时 长度必须和DataFrame 长度相匹配 如果赋值的是一个series 会精确匹配DataFrame的索引
+所有的空位都会被填上缺失值NAN
+In [58]: val = pd.Series([-1.2, -1.5, -1.7], index=['two', 'four', 'five'])
+In [59]: frame2['debt'] = val
+In [60]: frame2
+Out[60]: 
+       year   state  pop  debt
+one    2000    Ohio  1.5   NaN
+two    2001    Ohio  1.7  -1.2
+three  2002    Ohio  3.6   NaN
+four   2001  Nevada  2.4  -1.5
+five   2002  Nevada  2.9  -1.7
+six    2003  Nevada  3.2   NaN
+
+为不存在的列赋值会创建一个新列 del用于删除列
+
+In [134]: frame2['eastern'] = (frame2.state == 'Ohio')               
+
+In [135]: frame2                                                     
+Out[135]: 
+   year   state  pop  debt  eastern
+1  2000    Ohio  1.5   NaN     True
+2  2001    Ohio  1.7  -1.2     True
+3  2002    Ohio  3.6   NaN     True
+4  2001  Nevada  2.4  -1.5    False
+5  2002  Nevada  2.9  -1.7    False
+6  2003  Nevada  3.2   NaN    False
+#必须使用frame2['eastern'] 创建新的列 不能使用frame2.eastern创建新的列
+
+#使用del语句删除frame2中eastern列
+In [136]: del frame2['eastern']                                      
+
+In [137]: frame2                                                     
+Out[137]: 
+   year   state  pop  debt
+1  2000    Ohio  1.5   NaN
+2  2001    Ohio  1.7  -1.2
+3  2002    Ohio  3.6   NaN
+4  2001  Nevada  2.4  -1.5
+5  2002  Nevada  2.9  -1.7
+6  2003  Nevada  3.2   NaN
+In [138]: frame2.columns                                             
+Out[138]: Index(['year', 'state', 'pop', 'debt'], dtype='object')
+
+
+通过索引方式返回的列只是相应数据的视图 不是副本 所有的修改将会放映到原DataFrame上 通过Series 的copy方法即可指定复制列
+
+嵌套字典传给DataFrame pandas解释为外层字典的键为列 内层键作为行索引
+In [139]: pop = {'Nevada':{2001:2.4,2002:2.9},'Ohio':{2000:1.5,2001:1
+     ...: .7,2002:3.6}}                                              
+
+In [140]: frame3 = pd.DataFrame(pop)                                 
+
+In [141]: frame3                                                     
+Out[141]: 
+      Nevada  Ohio
+2001     2.4   1.7
+2002     2.9   3.6
+2000     NaN   1.5
+
+Nevada Ohio ------------外层键-----------列索引
+2001 2000 2002 ---------内层键-----------行索引
+
+In [142]: frame3.T                                                   
+Out[142]: 
+        2001  2002  2000
+Nevada   2.4   2.9   NaN
+Ohio     1.7   3.6   1.5
+
+#分割framedata
+In [144]: frame3                                                     
+Out[144]: 
+      Nevada  Ohio
+2001     2.4   1.7
+2002     2.9   3.6
+2000     NaN   1.5
+
+In [145]: pdata ={'Ohio':frame3['Ohio'][:-1],'Nevada':frame3['Nevada'
+     ...: ][:2]}                                                     
+
+In [146]: pd.DataFrame(pdata)                                        
+Out[146]: 
+      Ohio  Nevada
+2001   1.7     2.4
+2002   3.6     2.9
+#可以设定列名与行索引名 
+In [147]: frame3.index.name= 'years';frame3.columns.name = 'states'  
+
+In [148]: frame3                                                     
+Out[148]: 
+states  Nevada  Ohio
+years               
+2001       2.4   1.7
+2002       2.9   3.6
+2000       NaN   1.5
+#将除了行与列索引的名字除去之后的所有表内值显示出来
+In [149]: frame3.values                                              
+Out[149]: 
+array([[2.4, 1.7],
+       [2.9, 3.6],
+       [nan, 1.5]])
+
+In [150]: frame2.values                                              
+Out[150]: 
+array([[2000, 'Ohio', 1.5, nan],
+       [2001, 'Ohio', 1.7, -1.2],
+       [2002, 'Ohio', 3.6, nan],
+       [2001, 'Nevada', 2.4, -1.5],
+       [2002, 'Nevada', 2.9, -1.7],
+       [2003, 'Nevada', 3.2, nan]], dtype=object)
+
+索引对象
+
+In [151]: obj = pd.Series(range(3),index=['a','b','c'])              
+
+In [152]: obj                                                        
+Out[152]: 
+a    0
+b    1
+c    2
+dtype: int64
+
+In [153]: index = obj.index                                          
+
+In [154]: index                                                      
+Out[154]: Index(['a', 'b', 'c'], dtype='object')
+
+In [155]: index[1:]                                                  
+Out[155]: Index(['b', 'c'], dtype='object')
+#index对象不可被修改 不可变常量
+#不可变可以使得index对象在多个数据结构之间安全共享
+In [161]: obj2.index == labels                                       
+Out[161]: array([ True,  True,  True])
+
+In [162]: obj2.index is labels                                       
+Out[162]: True
+
+In [163]: obj2.index                                                 
+Out[163]: Int64Index([0, 1, 2], dtype='int64')
 
 
 
+#pandas 的 index 可以包含重复的标签
+In [168]: dup_labels = pd.Index(['foo','foo','bar','bar'])           
 
+In [169]: dup_labels                                                 
+Out[169]: Index(['foo', 'foo', 'bar', 'bar'], dtype='object')
+选择重复的标签 会显示所有的结果
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+append------------------------连接另一个index对象 产生一个新的index
+differebce--------------------计算差集 得到一个index
+intersecton-------------------计算交集
+union-------------------------计算并集
+isin--------------------------计算一个指示各值是否包含在参数集合中的bool数组
+delete------------------------删除索引i处，并且得到一个新的index
+drop--------------------------删除传入的值 得到一个新的index
+insert------------------------将元素插入到索引i处 并得到一个新的index
+is_monotonic------------------将各元素均大于等于前一个元素时，返回TRUE
+is_unique---------------------当index没有重复值时，返回TRUE
+unique------------------------计算index中唯一值的数组
 
 
 
