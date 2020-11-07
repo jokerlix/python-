@@ -1556,6 +1556,430 @@ axis = 1 列
 axis = 0 行
 
 
+布尔值数组的方法
+In [5]: bools = np.array([False,False,True,False])                                                              
+
+In [6]: bools.any()                                                                                             
+Out[6]: True
+
+In [7]: bools.all()                                                                                             
+Out[7]: False
+
+#对于bool值数组 any 检查数组中是否至少有一个True , all 检查是否每个值都是True
+
+
+排序 
+numpy数组可以使用sort方法按位置进行排序
+
+
+In [8]: arr = np.random.randn(6)                                                                                
+
+In [9]: arr                                                                                                     
+Out[9]: 
+array([ 0.67944287, -0.47540692,  1.78403566, -0.58655621, -0.6346273 ,
+        0.18517217])
+
+In [10]: arr.sort()                                                                                             
+
+In [11]: arr                                                                                                    
+Out[11]: 
+array([-0.6346273 , -0.58655621, -0.47540692,  0.18517217,  0.67944287,
+        1.78403566])
+
+In [12]: arr = np.random.randn(5,3)                                                                             
+
+In [13]: arr                                                                                                    
+Out[13]: 
+array([[-0.37386791, -0.86312593,  0.36908911],
+       [-0.02272889, -0.74287507, -0.43980578],
+       [ 0.63543663, -0.61295033, -0.09056214],
+       [ 0.47091438,  1.30140019,  1.04466813],
+       [ 1.68060622, -0.16003909, -0.73654842]])
+
+In [14]: arr.sort(axis=1)                                                                                       
+
+In [15]: arr                                                                                                    
+Out[15]: 
+array([[-0.86312593, -0.37386791,  0.36908911],
+       [-0.74287507, -0.43980578, -0.02272889],
+       [-0.61295033, -0.09056214,  0.63543663],
+       [ 0.47091438,  1.04466813,  1.30140019],
+       [-0.73654842, -0.16003909,  1.68060622]])
+
+In [16]: arr.sort(axis=0)                                                                                       
+
+In [17]: arr                                                                                                    
+Out[17]: 
+array([[-0.86312593, -0.43980578, -0.02272889],
+       [-0.74287507, -0.37386791,  0.36908911],
+       [-0.73654842, -0.16003909,  0.63543663],
+       [-0.61295033, -0.09056214,  1.30140019],
+       [ 0.47091438,  1.04466813,  1.68060622]])
+
+np.sort 方法返回的是已经排序好的数组拷贝 不是对原数组按照位置排序
+
+唯一值与其他集合逻辑
+
+数组的集合操作
+unique(x)              计算x的唯一值 并排序
+intersect1d(x,y)       计算x与y的交集 并排序
+union1d（x,y）          计算x和y的并集 并排序
+in1d(x,y)               计算x中的元素是否包含在y中 返回一个布尔值数组
+setdiff1d(x,y)          差集在x中不在y中的元素 
+setxor1d(x,y)           异或集，在x或y中但是不属于xy交集的元素
+
+
+
+使用数组进行文件输入和输出
+numpy可以在硬盘中将数据以文本或者二进制文件的形式存入硬盘或者用硬盘载入
+
+np.save np.load 高效存取硬盘数据的两大工具函数
+以未压缩格式进行存储 后缀名.npy
+
+ In [26]: arr = np.arange(10)                                                                                    
+
+In [27]: np.save('some_array',arr) 
+
+
+#如果文件存放路径没有写.npy后缀会被自动加入 
+
+#savez在未压缩文件中加入多个数组对象
+#当使用np.load 进行解压后使用类似字典结构进行调用
+
+In [26]: arr = np.arange(10)                                                                                    
+
+In [27]: np.save('some_array',arr)                                                                              
+
+In [28]: np.savez('array_archive.npz',a = arr,b = arr)                                                          
+
+In [29]: arch = np.load('array_archive.npz')                                                                    
+
+In [30]: arch['b']                                                                                              
+Out[30]: array([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
+
+In [31]: arch['a']                                                                                              
+Out[31]: array([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
+
+
+
+
+线性代数
+#dot 内积运算 np.dot(x,y) 等价于 x.dot(y)
+In [32]: x = np.array([[1.,2.,3.],[4.,5.,6.]])                                                                  
+
+In [33]: y = np.array([[6.,23.],[-1,7],[8,9]])                                                                  
+
+In [34]: x                                                                                                      
+Out[34]: 
+array([[1., 2., 3.],
+       [4., 5., 6.]])
+
+In [35]: y                                                                                                      
+Out[35]: 
+array([[ 6., 23.],
+       [-1.,  7.],
+       [ 8.,  9.]])
+
+In [36]: x.dot(y)                                                                                               
+Out[36]: 
+array([[ 28.,  64.],
+       [ 67., 181.]])
+
+In [37]: np.dot(x,y)                                                                                            
+Out[37]: 
+array([[ 28.,  64.],
+       [ 67., 181.]])
+
+一个二维数组与一个长度合适的一维数组之间的矩阵乘积 结果是一个一维数组
+In [38]: np.ones(3)                                                                                             
+Out[38]: array([1., 1., 1.])
+
+In [39]: np.dot(x,np.ones(3))                                                                                   
+Out[39]: array([ 6., 15.])
+#@运算符等价于点乘矩阵
+In [40]: x @ np.ones(3)                                                                                         
+Out[40]: array([ 6., 15.])
+
+numpy中存在linalg拥有一个矩阵分解的标准函数集 以及其他常用函数 例如 求逆矩阵 行列式求解
+
+常用numpy.linalg函数
+diag           将一个方阵的对角元素作为一维数组返回/将一个一维数组转换成一个稀疏矩阵 对角线上是一维数组的元素
+dot            矩阵点乘
+trace          计算矩阵迹
+det            计算矩阵行列式
+eig            计算方阵的特征值和特征向量
+inv            计算方阵的逆矩阵
+pinv           计算矩阵的Moore-Penrose伪逆
+qr             计算QR分解
+svd            计算奇异值分解(SVD)
+solve          求解AX=B 其中A是方阵
+lstsq          计算AX=B 的最小二乘解
+
+
+
+伪随机数生成
+numpy.random 填补了python内建的random 模块不足 
+
+np.random.normal()正态分布
+高斯分布的概率密度函数
+
+              
+
+numpy中
+
+numpy.random.normal(loc=0.0, scale=1.0, size=None)  
+
+参数的意义为：
+
+　　loc:float
+
+　　概率分布的均值，对应着整个分布的中心center
+
+　　scale:float
+
+　　概率分布的标准差，对应于分布的宽度，scale越大越矮胖，scale越小，越瘦高
+
+　　size:int or tuple of ints
+
+　　输出的shape，默认为None，只输出一个值
+
+　　我们更经常会用到np.random.randn(size)所谓标准正太分布（μ=0, σ=1），对应于np.random.normal(loc=0, scale=1, size)
+
+
+伪随机数是有具有确定性型为的算法根据随机数生成器中的随机数种子生成
+#更改随机数生成的种子
+np.random.seed(1234)
+numpy.random 中的数据生成函数使用了一个全局随机数种子 为了避免全局状态 可以使用numpy.random.RandomState创建一个随机数生成器
+使得数据独立于其他随机数状态
+
+numpy.random中部分函数列表
+seed            向随机数生成器传递随机状态种子
+permutation     返回一个序列的随机排列 或者返回一个乱序的整数范围序列
+shuffle         随机排列一个序列
+rand            从均匀分布中抽取样本
+randint         根据给定的有低到高的范围抽取随机整数
+randn           从均值0方差1 的正态分布中抽取样本
+binomial        从二项分布中抽取样本
+normal          从正态（高斯）分布中抽取样本
+beta            从beta分布中抽取样本
+chisquare       从卡方分布中抽取样本
+gamma           从gama分布中抽取样本
+uniform         从均匀[0,1)分布中抽取样本
+
+随机漫步
+
+
+
+pandas入门
+
+pandas主要处理表格型数据或者异质型数据 numpy适合处理同质型树值类数组数据
+
+
+pandas两个常用工具数据结构：series DataFrame 
+Series 是一种一维数组型对象 包含了一个值序列，并且包含了数据标签（索引index）
+
+In [59]: import pandas as pd                                                                                    
+
+In [60]: obj = pd.Series([4,7,-5,3])                                                                            
+
+In [61]: obj                                                                                                    
+Out[61]: 
+0    4
+1    7
+2   -5
+3    3
+dtype: int64
+
+In [62]: obj.values                                                                                             
+Out[62]: array([ 4,  7, -5,  3])
+
+In [63]: obj.index                                                                                              
+Out[63]: RangeIndex(start=0, stop=4, step=1)
+
+In [64]: obj2 = pd.Series([4,7,-5,3],index = ['d','b','a','c'])                                                 
+
+In [65]: obj2                                                                                                   
+Out[65]: 
+d    4
+b    7
+a   -5
+c    3
+dtype: int64
+
+In [66]: obj2['a']                                                                                              
+Out[66]: -5
+
+In [67]: obj2['d'] = 6                                                                                          
+
+In [68]: obj2[['c','a','d']]                                                                                    
+Out[68]: 
+c    3
+a   -5
+d    6
+dtype: int64
+
+
+In [69]: obj2[obj2>0]                                                                                           
+Out[69]: 
+d    6
+b    7
+c    3
+dtype: int64
+
+In [70]: obj2*2                                                                                                 
+Out[70]: 
+d    12
+b    14
+a   -10
+c     6
+dtype: int64
+
+In [71]: obj                                                                                                    
+Out[71]: 
+0    4
+1    7
+2   -5
+3    3
+dtype: int64
+
+In [72]: obj2                                                                                                   
+Out[72]: 
+d    6
+b    7
+a   -5
+c    3
+dtype: int64
+
+In [73]: np.exp(obj2)                                                                                           
+Out[73]: 
+d     403.428793
+b    1096.633158
+a       0.006738
+c      20.085537
+dtype: float64
+
+In [74]: 'b' in obj2                                                                                            
+Out[74]: True
+
+In [75]: 'e' in obj2                                                                                            
+Out[75]: False
+
+In [76]: sdata = {'Ohio':35000,'Texas':71000,'Oregon':16000,'Utah':5000}                                        
+
+In [77]: obj3 = pd.Series(sdata)                                                                                
+
+In [78]: obj3                                                                                                   
+Out[78]: 
+Ohio      35000
+Texas     71000
+Oregon    16000
+Utah       5000
+dtype: int64
+
+In [79]: states = {'California','Ohio','Oregon','Texas'}                                                        
+
+In [80]: obj4 = pd.Series(sdata,index = states)                                                                 
+
+In [81]: obj4                                                                                                   
+Out[81]: 
+Texas         71000.0
+California        NaN
+Oregon        16000.0
+Ohio          35000.0
+dtype: float64
+
+In [82]: pd.isnull(obj4)                                                                                        
+Out[82]: 
+Texas         False
+California     True
+Oregon        False
+Ohio          False
+dtype: bool
+
+In [83]: pd.notnull(obj4)                                                                                       
+Out[83]: 
+Texas          True
+California    False
+Oregon         True
+Ohio           True
+dtype: bool
+
+In [84]: obj4.isnull() 
+    ...:  
+    ...:                                                                                                        
+Out[84]: 
+Texas         False
+California     True
+Oregon        False
+Ohio          False
+dtype: bool
+
+In [85]: obj3                                                                                                   
+Out[85]: 
+Ohio      35000
+Texas     71000
+Oregon    16000
+Utah       5000
+dtype: int64
+
+In [86]: obj4                                                                                                   
+Out[86]: 
+Texas         71000.0
+California        NaN
+Oregon        16000.0
+Ohio          35000.0
+dtype: float64
+
+In [87]: obj3 + obj4                                                                                            
+Out[87]: 
+California         NaN
+Ohio           70000.0
+Oregon         32000.0
+Texas         142000.0
+Utah               NaN
+dtype: float64
+
+In [88]: obj4.name = 'population'                                                                               
+
+In [89]: obj4.index.name = 'state'                                                                              
+
+In [90]: obj4                                                                                                   
+Out[90]: 
+state
+Texas         71000.0
+California        NaN
+Oregon        16000.0
+Ohio          35000.0
+Name: population, dtype: float64
+
+In [91]: obj                                                                                                    
+Out[91]: 
+0    4
+1    7
+2   -5
+3    3
+dtype: int64
+
+In [92]: obj.index = ['Bob','Steve','Jeff','Ryan']                                                              
+
+In [93]: obj                                                                                                    
+Out[93]: 
+Bob      4
+Steve    7
+Jeff    -5
+Ryan     3
+dtype: int64
+
+
+DataFrame 
+DataFrame 表示的是矩阵的数据表  包含已经排序的列集合 每一列可以是不同的值类型（树值）
+
+
+
+
+
+
+
 
 
 
